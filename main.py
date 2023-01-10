@@ -7,10 +7,9 @@ def main():
 
     conn = sq.connect('test.db')
     c = conn.cursor()
-    c.execute('CREATE TABLE IF NOT EXISTS test (fname TEXT(20), ename TEXT(40), epost TEXT, tlf INTEGER(20), postnummer INTEGER(4))')
     data = pd.read_csv('personer.csv')
-    data.to_sql('data', conn, if_exists= 'replace', index=False)
-    c.execute('SELECT * FROM test')
+    data.to_sql('kunder', conn, if_exists= 'replace', index=False)
+    c.execute('SELECT * FROM kunder')
     print(c.fetchall())
     conn.commit()
     conn.close()
