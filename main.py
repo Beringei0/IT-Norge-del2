@@ -8,7 +8,7 @@ def main():
     global conn #makes the var "conn" global 
     global c #makes the var "c" global 
 
-    conn = sq.connect('kunder.db') #creates a DB
+    conn = sq.connect('postnr.db') #creates a DB
 
     c = conn.cursor() #makes a cursor
 
@@ -17,7 +17,7 @@ def main():
 def createtable():
 
     #creates a new table with column "kundenr" as primary
-    table =('CREATE TABLE IF NOT EXISTS kundeTable (kundenr TEXT PRIMARY KEY, fname TEXT, ename TEXT, tlf INTEGER, postnummer INTEGER)') 
+    table =('CREATE TABLE IF NOT EXISTS postnrtable (kundenr TEXT PRIMARY KEY, fname TEXT, ename TEXT, tlf INTEGER, postnummer INTEGER)') 
     
     c.execute(table) #import table into DB
 
@@ -27,9 +27,9 @@ def load_data():
     try: # tryblock rturns a value everytime the code runs into an exception or not
 
         data = pd.read_excel('postnummer.xlsx') #reads in csv file
-        data.to_sql('kundeTable', conn, if_exists ='replace', index=False) #sends data in sql format into "kundeTable"
+        data.to_sql('postnrtable', conn, if_exists ='replace', index=False) #sends data in sql format into "kundeTable"
 
-        for row in c.execute('SELECT * FROM kundeTable'): #loop that returns ever row in the created table 
+        for row in c.execute('SELECT * FROM postnrtable'): #loop that returns ever row in the created table 
            print(row) #prints every single row in DB
 
     except: #returns when code runs into an exception
