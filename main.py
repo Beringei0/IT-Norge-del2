@@ -48,5 +48,6 @@ def closeDB():
 main()
 createtable()
 load_data()
+closeDB()
 
 
