@@ -26,8 +26,8 @@ def createtable():
 def load_data():
     try: # tryblock rturns a value everytime the code runs into an exception or not
 
-        data = pd.read_excel('personer.csv') #reads in csv file
-        data.to_sql('kundeTable', conn, if_exists ='replace', index=False) #sends data in sql format into "kundeTable"
+        data = pd.read_csv('personer.csv') #reads in csv file
+        data.to_sql('kundeTable', conn, if_exists ='append', index=False) #sends data in sql format into "kundeTable"
 
         for row in c.execute('SELECT * FROM kundeTable'): #loop that returns ever row in the created table 
            print(row) #prints every single row in DB
