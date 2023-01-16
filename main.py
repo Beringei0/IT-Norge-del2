@@ -12,15 +12,6 @@ def main():
 
     c = conn.cursor() #makes a cursor
 
-
-#-------------------function that creates DB
-def createtable():
-
-    #creates a new table with column "kundenr" as primary
-    table =('CREATE TABLE IF NOT EXISTS postnrtable (kundenr TEXT PRIMARY KEY, fname TEXT, ename TEXT, tlf INTEGER, postnummer INTEGER)') 
-    
-    c.execute(table) #import table into DB
-
     
 #---------------function that loads in data from csv file 
 def load_data():
@@ -46,7 +37,6 @@ def closeDB():
 
 #-------------every called function 
 main()
-createtable()
 load_data()
 closeDB()
 
