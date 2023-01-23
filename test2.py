@@ -19,7 +19,7 @@ def creatTables():
     enavn    TEXT,
     epost    TEXT,
     tlf      INTEGER,
-    postnr   INTEGER 
+    postnr   INTEGER
     )''')
     
     # creates table "postnummer_tabell"
@@ -32,23 +32,26 @@ def creatTables():
     )''')
 
 def joinColumns():
-    c.execute('''SELECT postnummer
-     FROM postnummer_tabell
-     INNER JOIN kundeinfo 
-     ON kundeinfo.postnr = postnummer_tabell.postnummer
+    c.execute('''SELECT postnr
+     FROM kundeinfo
+     INNER JOIN postnummer_tabell
+     ON postnummer_tabell.postnummer = kundeinfo.postnr
      ''')
+    conn.commit()
 
 def insrtKundeinfo():
     with open ('randoms.csv', 'r') as f:
         dr = csv.DictReader(f)
-        to_kundeinfo = [(i['fname'], i['ename'], i['epost'], i['tlf'], i['postnummer'])for i in dr]
-        c.executemany('INSERT INTO kundeinfo (fnavn, enavn, epost, tlf, postnr) VALUES (?, ?, ?, ?, ?)', to_kundeinfo)
+        to_kundeinfo = [(i['fname'], i['ename'], i['epost'], i['tlf'])for i in dr]
+        c.executemany('INSERT INTO kundeinfo (fnavn, enavn, epost, tlf) VALUES (?, ?, ?, ?)', to_kundeinfo)
+        conn.commit()
 
 def insrtPostnr():
     with open ('Postnummerregister.csv', 'r') as f:
         dr = csv.DictReader(f)
         to_postnummer = [(i['Postnummer'], i['Poststed'], i['Kommunenummer'], i['Kommunenavn'], i['Kategori'])for i in dr]
         c.executemany('INSERT INTO postnummer_tabell (postnummer, poststed, kommunenr, kommunenavn, kategori) VALUES (?, ?, ?, ?, ?)', to_postnummer)
+        conn.commit()
 
 def inputField():
     type = str(input("Would like to close this DB y/n?: "))
@@ -58,10 +61,6 @@ def inputField():
         conn.close()
     elif type == "n":
         print("Changes will be made to DB")
-
-
-def commit():
-    conn.commit()
         
 
 
@@ -78,7 +77,6 @@ if __name__=='__main__':
     insrtKundeinfo()
     insrtPostnr()
     joinColumns()
-    commit()
     printRows()
 
     
