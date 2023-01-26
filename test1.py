@@ -21,11 +21,11 @@ def main():
 def creatTables():
     # creates table "postnummer_tabell"
     c.execute('''CREATE TABLE IF NOT EXISTS postnummer_tabell(
-     postnummer  INTEGER PRIMARY KEY, 
-     poststed    TEXT    NOT NULL,
-     kommunenr   INTEGER NOT NULL,
-     kommunenavn TEXT    NOT NULL,
-     kategori    TEXT    NOT NULL
+      postnummer  INTEGER PRIMARY KEY, 
+      poststed    TEXT    NOT NULL,
+      kommunenr   INTEGER NOT NULL,
+      kommunenavn TEXT    NOT NULL,
+      kategori    TEXT    NOT NULL
     )''')
 
     # creates table "Kundeliste"
@@ -35,16 +35,17 @@ def creatTables():
        enavn    TEXT NOT NULL,
        epost    TEXT NOT NULL,
        tlf      INTEGER NOT NULL,
-       postnr   INTEGER NOT NULL,
-       FOREIGN KEY (postnr) REFERENCES postnummer(postnummer_tabell)
+       postnummer   INTEGER NOT NULL,
+       FOREIGN KEY (postnummer) REFERENCES postnummer(postnummer_tabell)
     )''')
 
 
 def insrtKundeinfo():
     with open ('randoms.csv', 'r') as f:
-        dr = csv.DictReader(f)
-        to_kundeinfo = [(i['fname'], i['ename'], i['epost'], i['tlf'], i['postnummer'])for i in dr]
-        c.executemany('INSERT INTO kundeinfo (fnavn, enavn, epost, tlf, postnr) VALUES (?, ?, ?, ?, ?)', to_kundeinfo)
+        reader = csv.reader(f)
+        next(reader)
+        for row in reader:
+            c.execute('INSERT INTO kundeinfo (fnavn, enavn, epost, tlf, postnummer) VALUES (?, ?, ?, ?, ?)', row)
 
 def insrtPostnr():
     with open ('Postnummerregister.csv', 'r') as f:
