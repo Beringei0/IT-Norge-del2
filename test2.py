@@ -1,82 +1,67 @@
-import sqlite3 as sq
-import csv
-#-------------------every imported module 
 
-# main functions 
-def main():
-    global conn# makes var "conn" global 
-    global c# make var "cursor" global
+# Import required libraries
+import sqlite3
+  
+# Connect to SQLite database
+# New file created if it doesn't already exist
+conn = sqlite3.connect('Geeks.db')
+  
+# Create cursor object
+cursor = conn.cursor()
+  
+# Create and populate tables
+cursor.executescript('''
+CREATE TABLE Advisor(
+AdvisorID INTEGER NOT NULL,
+AdvisorName TEXT NOT NULL,
+PRIMARY KEY(AdvisorID)
+);
+  
+CREATE TABLE Student(
+StudentID NUMERIC NOT NULL,
+StudentName NUMERIC NOT NULL,
+AdvisorID INTEGER,
+FOREIGN KEY(AdvisorID) REFERENCES Advisor(AdvisorID),
+PRIMARY KEY(StudentID)
+);
+  
+INSERT INTO Advisor(AdvisorID, AdvisorName) VALUES
+(1,"John Paul"), 
+(2,"Anthony Roy"), 
+(3,"Raj Shetty"),
+(4,"Sam Reeds"),
+(5,"Arthur Clintwood");
+  
+INSERT INTO Student(StudentID, StudentName, AdvisorID) VALUES
+(501,"Geek1",1),
+(502,"Geek2",1),
+(503,"Geek3",3),
+(504,"Geek4",2),
+(505,"Geek5",4),
+(506,"Geek6",2),
+(507,"Geek7",2),
+(508,"Geek8",3),
+(509,"Geek9",NULL),
+(510,"Geek10",1);
+  
+''')
 
-    conn = sq.connect('kundeliste.db')# creates a new table "kundeliste.db"
-    c = conn.cursor()# creates a cursor for DB 
-
-# function that creates tables for "kundeliste" DB
-def creatTables():
-    # creates table "Kundeliste"
-    c.execute('''CREATE TABLE IF NOT EXISTS kundeinfo (
-    kundenr  INTEGER PRIMARY KEY,
-    fnavn    TEXT,
-    enavn    TEXT,
-    epost    TEXT,
-    tlf      INTEGER,
-    postnr   INTEGER
-    )''')
-    
-    # creates table "postnummer_tabell"
-    c.execute('''CREATE TABLE IF NOT EXISTS postnummer_tabell(
-    postnummer  INTEGER,
-    poststed    TEXT,
-    kommunenr   INTEGER,
-    kommunenavn TEXT,
-    kategori    TEXT   
-    )''')
-
-def joinColumns():
-    c.execute('''SELECT postnr
-     FROM kundeinfo
-     INNER JOIN postnummer_tabell
-     ON postnummer_tabell.postnummer = kundeinfo.postnr
-     ''')
-    conn.commit()
-
-def insrtKundeinfo():
-    with open ('randoms.csv', 'r') as f:
-        dr = csv.DictReader(f)
-        to_kundeinfo = [(i['fname'], i['ename'], i['epost'], i['tlf'])for i in dr]
-        c.executemany('INSERT INTO kundeinfo (fnavn, enavn, epost, tlf) VALUES (?, ?, ?, ?)', to_kundeinfo)
-        conn.commit()
-
-def insrtPostnr():
-    with open ('Postnummerregister.csv', 'r') as f:
-        dr = csv.DictReader(f)
-        to_postnummer = [(i['Postnummer'], i['Poststed'], i['Kommunenummer'], i['Kommunenavn'], i['Kategori'])for i in dr]
-        c.executemany('INSERT INTO postnummer_tabell (postnummer, poststed, kommunenr, kommunenavn, kategori) VALUES (?, ?, ?, ?, ?)', to_postnummer)
-        conn.commit()
-
-def inputField():
-    type = str(input("Would like to close this DB y/n?: "))
-
-    if type == "y":
-        print("DB has been closed")
-        conn.close()
-    elif type == "n":
-        print("Changes will be made to DB")
-        
-
-
-    
-def printRows():
-    for row in c.execute('SELECT * FROM kundeinfo'):
-        print(row)
-
-
-# if main block 
-if __name__=='__main__':
-    main()
-    creatTables()
-    insrtKundeinfo()
-    insrtPostnr()
-    joinColumns()
-    printRows()
-
-    
+# Query for INNER JOIN
+sql = '''SELECT StudentID, StudentName, AdvisorName 
+FROM Student 
+INNER JOIN Advisor
+ON Student.AdvisorID = Advisor.AdvisorID;'''
+  
+# Executing the query
+cursor.execute(sql)
+  
+# Fetching rows from the result table
+result = cursor.fetchall()
+for row in result:
+    print(row)
+  
+#Commit changes to database
+conn.commit()
+  
+# Closing the connection
+conn.close()

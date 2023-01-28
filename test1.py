@@ -13,31 +13,26 @@ def main():
 # function that creates tables for "kundeliste" DB
 def creatTables():
     # creates table "Kundeliste"
-    c.execute('''CREATE TABLE IF NOT EXISTS kundeinfo (
-    kundenr  INTEGER PRIMARY KEY,
-    fnavn    TEXT,
-    enavn    TEXT,
-    epost    TEXT,
-    tlf      INTEGER,
-    postnr   INTEGER 
-    )''')
     
     # creates table "postnummer_tabell"
     c.execute('''CREATE TABLE IF NOT EXISTS postnummer_tabell(
-    postnummer  INTEGER,
-    poststed    TEXT,
-    kommunenr   INTEGER,
-    kommunenavn TEXT,
-    kategori    TEXT   
+    postnummer  INTEGER PRIMARY KEY NOT NULL,
+    poststed    TEXT NOT NULL,
+    kommunenr   INTEGER NOT NULL,
+    kommunenavn TEXT NOT NULL,
+    kategori    TEXT NOT NULL    
     )''')
 
-def joinColumns():
-    c.execute('''SELECT postnummer
-     FROM postnummer_tabell
-     INNER JOIN kundeinfo 
-     ON kundeinfo.postnr = postnummer_tabell.postnummer
-     ''')
-
+    c.execute('''CREATE TABLE IF NOT EXISTS kundeinfo (
+    kundenr  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    fnavn    TEXT NOT NULL,
+    enavn    TEXT NOT NULL,
+    epost    TEXT NOT NULL,
+    tlf      INTEGER,
+    postnr   INTEGER NOT NULL,
+    FOREIGN KEY (postnr) REFERENCES postnummer_tabell (postnummer) 
+    )''')
+ 
 def insrtKundeinfo():
     with open ('randoms.csv', 'r') as f:
         dr = csv.DictReader(f)
@@ -60,6 +55,38 @@ def inputField():
         print("Changes will be made to DB")
 
 
+def menu():
+    search = input("serach term: ")
+
+    query = "SELECT * FROM kundeinfo WHERE kundenr LIKE'%{}%'".format(search)
+
+    c.execute(query)
+    results = c.execute('''SELECT * FROM kundeinfo WHERE kundeinfo.kundenr = ?''',(search))
+
+    for results in results:
+        print(results)
+
+
+def joinColumns():
+    query = '''SELECT 
+    kundeinfo.kundenr,
+    kundeinfo.fnavn,
+    kundeinfo.enavn, 
+    kundeinfo.epost, 
+    kundeinfo.tlf,
+    kundeinfo.postnr
+    FROM kundeinfo
+    INNER JOIN postnummer_tabell
+    ON kundeinfo.postnr = postnummer_tabell.postnummer
+    '''
+
+    c.execute(query)
+    results = c.fetchall()
+
+    for results in results:
+        print(results)
+
+
 def commit():
     conn.commit()
         
@@ -79,6 +106,7 @@ if __name__=='__main__':
     insrtPostnr()
     joinColumns()
     commit()
-    printRows()
+    #printRows()
+    menu()
 
     
