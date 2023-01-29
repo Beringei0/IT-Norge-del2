@@ -8,6 +8,8 @@ conn = sqlite3.connect('Geeks.db')
   
 # Create cursor object
 cursor = conn.cursor()
+
+cursor.execute('PRAGMA foreign_keys = ON')
   
 # Create and populate tables
 cursor.executescript('''
