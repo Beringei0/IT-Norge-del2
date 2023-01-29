@@ -88,11 +88,6 @@ def searchInfo():
     ON kundeinfo.[postnr] = postnummer_tabell.[postnummer]
     WHERE kundeinfo.kundenr = ?''',(search,))
 
-    if results != c.execute('SELECT kundenr FROM kundeinfo'):
-        print("bra!!")
-    else:
-        print("denne kunden finne ikke")
-
     # for loop prints "results" and "list"
     for results in results:
         print(list)
@@ -116,7 +111,6 @@ def printRows():
     INNER JOIN postnummer_tabell
     ON kundeinfo.postnr = postnummer_tabell.postnummer
     '''
-
     c.execute(query)
     results = c.fetchall()
 
