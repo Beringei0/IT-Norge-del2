@@ -33,6 +33,9 @@ def buttons():
     delete_button = tk.Button(root, text='delete', command=del_row)
     delete_button.grid(row=19, column=0)
 
+    faq_button = tk.Button(root, text="FAQ", command=faq_window)
+    faq_button.grid(row=0, column=1)
+
 
 # function that includes every tk entry fields
 def entries():
@@ -122,6 +125,14 @@ def del_row():
     conn.commit()
 
     delete_entry.delete(0, tk.END)
+
+def faq_window():
+    root2 = tk.Tk()
+
+    faq_button = tk.Button(text='FAQ')
+    faq_button.grid(row=0, column=0)
+
+    root.withdraw()
 
 # initializes all tkinter objects and widgets
 def mainloop():
