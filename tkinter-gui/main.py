@@ -1,14 +1,20 @@
 import sqlite3 as sq
 import tkinter as tk
+import webbrowser as web 
 #-------------------every imported module
 
-# initializes the tkinter window
-root = tk.Tk()
-# positions window at center 
-root.eval("tk::PlaceWindow . center")
+def window():
+    global main_window
+    # initializes the tkinter window
+    main_window = tk.Tk()
+    # positions window at center 
+    main_window.eval("tk::PlaceWindow . center")
+
 
 # main function holding all functions 
 def main():
+    window()
+    login()
     labels()
     entries()
     buttons()
@@ -16,24 +22,35 @@ def main():
     insrt_data() 
     mainloop()
 
+# Login function that appears when launching the code 
+def login():
+    # Tkinter window for the login screen 
+    login_window = tk.Tk()
+    # positions window at center 
+    login_window.eval("tk::PlaceWindow . center")
+
+
+    
+
+
 # function that includes every tk button 
 def buttons():
     global result_listbox
     global search_button
 
-    search_button = tk.Button(root, text="search")
+    search_button = tk.Button(main_window, text="search")
     search_button.grid(row=2, column=0)
 
-    result_listbox = tk.Listbox(root, height=1, width=70)
+    result_listbox = tk.Listbox(main_window, height=1, width=70)
     result_listbox.grid(row=3, column=0, pady=10)
 
-    add_data_button = tk.Button(root, text="add data", command=insrt_data)
+    add_data_button = tk.Button(main_window, text="add data", command=insrt_data)
     add_data_button.grid(row=14, column=0) 
 
-    delete_button = tk.Button(root, text='delete', command=del_row)
+    delete_button = tk.Button(main_window, text='delete', command=del_row)
     delete_button.grid(row=19, column=0)
 
-    faq_button = tk.Button(root, text="FAQ", command=faq_window)
+    faq_button = tk.Button(main_window, text="FAQ", command=faq_window)
     faq_button.grid(row=0, column=1)
 
 
@@ -45,39 +62,42 @@ def entries():
     global delete_entry
     global email_entry
 
-    search_entry = tk.Entry(root, width=30)
+    #Tkinter eentry fields 
+    search_entry = tk.Entry(main_window, width=30)
     search_entry.grid(row=1, column=0)
 
-    name_entry = tk.Entry(root, width=30)
+    name_entry = tk.Entry(main_window, width=30)
     name_entry.grid(row=8, column=0)
 
-    suname_entry = tk.Entry(root, width=30)
+    suname_entry = tk.Entry(main_window, width=30)
     suname_entry.grid(row=11, column=0)
 
-    email_entry = tk.Entry(root, width=30)
+    email_entry = tk.Entry(main_window, width=30)
     email_entry.grid(row=13, column=0)  
 
-    delete_entry = tk.Entry(root, width=30)
+    delete_entry = tk.Entry(main_window, width=30)
     delete_entry.grid(row=17, column=0)  
     
 # function that includes every tk label 
 def labels():
-    search_label = tk.Label(root, text='søk etter kunder')
+
+    #Tkinter label objects 
+    search_label = tk.Label(main_window, text='søk etter kunder')
     search_label.grid(row=0, column=0)
 
-    add_data_label = tk.Label(root, text='legg inn nye kunder')
+    add_data_label = tk.Label(main_window, text='legg inn nye kunder')
     add_data_label.grid(row=4, column=0)
 
-    name_label = tk.Label(root, text="Name")
+    name_label = tk.Label(main_window, text="Name")
     name_label.grid(row=7, column=0)
 
-    suname_label = tk.Label(root, text="Surname")
+    suname_label = tk.Label(main_window, text="Surname")
     suname_label.grid(row=10, column=0)
 
-    email_label = tk.Label(root, text="Email")
+    email_label = tk.Label(main_window, text="Email")
     email_label.grid(row=12, column=0)
 
-    delete_label = tk.Label(root, text="slett kunde via kundenummer(sletter fra test.db)")
+    delete_label = tk.Label(main_window, text="slett kunde via kundenummer(sletter fra test.db)")
     delete_label.grid(row=16, column=0, pady=5)
 
 # search function that finds db objects based on the search_entry
@@ -126,17 +146,42 @@ def del_row():
 
     delete_entry.delete(0, tk.END)
 
+# function that stores every widget included in the FAQ window
 def faq_window():
-    root2 = tk.Tk()
+    faq_window = tk.Tk()
 
-    faq_button = tk.Button(text='FAQ')
-    faq_button.grid(row=0, column=0)
+    faq_text = tk.Label(faq_window, text="""
+    FAQ:
+    Hvordan oppretter jeg en ny bruker i Spiceworks Cloud Help Desk?:
 
-    root.withdraw()
+    * Logg inn på administratorkonsollen og gå til "Settings" (Innstillinger).
+    * Under "User Management" (Brukerhåndtering), velg "New User" (Ny bruker).
+    * Fyll ut nødvendig informasjon om brukeren og klikk på "Save" (Lagre) for å opprette den nye brukeren.
+
+    Hvordan oppretter jeg en ny sak i Spiceworks Cloud Help Desk?:
+
+    * Logg inn på brukerportalen eller administratorkonsollen.
+    * Klikk på "New Ticket" (Ny sak) eller "Submit a Request" (Send en henvendelse).
+    * Fyll ut informasjonen om saken, inkludert tittel, beskrivelse og eventuelle vedlegg.
+    * Klikk på "Submit" (Send) for å opprette den nye saken.
+
+    Hvordan tildeles en sak til en bestemt tekniker i Spiceworks Cloud Help Desk?:
+
+    * Åpne den aktuelle saken i administratorkonsollen.
+    * Finn delen "Assigned To" (Tildelt til) og velg den ønskede teknikeren fra rullegardinmenyen.
+    * Klikk på "Save" (Lagre) for å oppdatere saken med den nye tildelingen.""")
+    faq_text.grid(row=0, column=0)
+
+    question_button = tk.Button(faq_window, text="send spørsmål", command=redirect)
+    question_button.grid(padx=5, pady=5)
+
+def redirect():
+    web.open("https://askodegaard.on.spiceworks.com/portal")
+
 
 # initializes all tkinter objects and widgets
 def mainloop():
-    root.mainloop()
+    main_window.mainloop()
 
 
 if __name__=='__main__':
