@@ -15,6 +15,7 @@ def main():
     insrt_data() 
     mainloop()
 
+# function for the main window
 def window_main():
     global main_window
     # initializes the tkinter window
@@ -55,7 +56,6 @@ def entries_main():
     global delete_entry
     global email_entry
 
-    #Tkinter eentry fields 
     search_entry = tk.Entry(main_window, width=30)
     search_entry.grid(row=1, column=1)
 
